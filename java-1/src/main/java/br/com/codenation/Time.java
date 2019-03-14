@@ -65,5 +65,4 @@ public class Time {
 		this.jogadorLista = new ArrayList<Jogador>();
 	}
 
-	
 }

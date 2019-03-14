@@ -62,5 +62,4 @@ public class Jogador {
 		this.id = id;
 	}
 	
-	
 }

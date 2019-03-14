@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import br.com.codenation.desafio.annotation.Desafio;
@@ -74,7 +75,6 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		time.setCapitao(jogador);
 	}
 	
-
 	@Desafio("buscarCapitaoDoTime")
 	public Long buscarCapitaoDoTime(Long idTime) {
 		Time time = getTimePorId(idTime);
@@ -92,7 +92,6 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		return capitao.getId();
 	}
 	
-
 	@Desafio("buscarNomeJogador")
 	public String buscarNomeJogador(Long idJogador) {
 		Jogador jogador = getJogadorPorId(idJogador);
@@ -104,7 +103,6 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		return jogador.getNome();
 	}
 	
-
 	@Desafio("buscarNomeTime")
 	public String buscarNomeTime(Long idTime) {
 		Time time = getTimePorId(idTime);
@@ -116,7 +114,6 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		return time.getNome();
 	}
 	
-
 	@Desafio("buscarJogadoresDoTime")
 	public List<Long> buscarJogadoresDoTime(Long idTime) {
 		Time time = getTimePorId(idTime);
@@ -125,20 +122,19 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 			throw new TimeNaoEncontradoException();
 		}
 		
-		List<Long> jogadores = time.getJogadorLista()
+		List<Long> jogadoresDoTimeLista = time.getJogadorLista()
 				.stream()
 				.sorted(Comparator.comparing(Jogador::getId))
 				.map(jogador -> new Long(jogador.getId()))
 				.collect(Collectors.toList());
 		
-		if (jogadores.size() > 0) {
-			return jogadores;
+		if (jogadoresDoTimeLista.size() > 0) {
+			return jogadoresDoTimeLista;
 		} else {
 			return new ArrayList<Long>();
 		}
 	}
 	
-
 	@Desafio("buscarMelhorJogadorDoTime")
 	public Long buscarMelhorJogadorDoTime(Long idTime) {
 		Time time = getTimePorId(idTime);
@@ -147,19 +143,24 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 			throw new TimeNaoEncontradoException();
 		}
 		
-		Jogador maxPorHabilidade = time.getJogadorLista()
-			      .stream()
-			      .max(Comparator.comparing(Jogador::getNivelHabilidade))
-			      .orElseThrow(NoSuchElementException::new);
+		Jogador jogadorMaisHabilidosoDoTime = null;
 		
-		if (maxPorHabilidade == null) {
-			throw new JogadorNaoEncontradoException();
+		List<Jogador> jogadoresDoTimeLista = time.getJogadorLista();
+		
+		if (jogadoresDoTimeLista.size() > 0) {
+			jogadorMaisHabilidosoDoTime = jogadoresDoTimeLista
+					.stream()
+					.max(Comparator.comparing(Jogador::getNivelHabilidade))
+					.get();
 		}
 		
-		return maxPorHabilidade.getId();
+		if (jogadorMaisHabilidosoDoTime == null) {
+			throw new JogadorNaoEncontradoException();
+		}
+
+		return jogadorMaisHabilidosoDoTime.getId();
 	}
 	
-
 	@Desafio("buscarJogadorMaisVelho")
 	public Long buscarJogadorMaisVelho(Long idTime) {
 		Time time = getTimePorId(idTime);
@@ -168,24 +169,27 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 			throw new TimeNaoEncontradoException();
 		}
 		
-		List<Jogador> ordenaIdadeJogadoresLista = time.getJogadorLista()
+		Jogador jogadorMaisVelhoDoTime = null;
+		
+		List<Jogador> jogadoresDoTimeLista = time.getJogadorLista()
 				.stream()
 				.sorted(Comparator.comparing(Jogador::getDataNascimento))
 				.collect(Collectors.toList());
 		
-		if (ordenaIdadeJogadoresLista.size() == 0) {
+		if (jogadoresDoTimeLista.size() > 0) {
+			jogadorMaisVelhoDoTime = jogadoresDoTimeLista
+					.stream()
+					.findFirst()
+					.orElse(null);
+		}
+		
+		if (jogadorMaisVelhoDoTime == null) {
 			throw new JogadorNaoEncontradoException();
 		}
 		
-		Jogador jogador = ordenaIdadeJogadoresLista
-				.stream()
-				.findFirst()
-				.orElse(null);
-
-		return jogador.getId();
+		return jogadorMaisVelhoDoTime.getId();
 	}
 	
-
 	@Desafio("buscarTimes")
 	public List<Long> buscarTimes() {
 		List<Long> timeLista = getTimeLista()
@@ -201,36 +205,39 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		}
 	}
 	
-
 	@Desafio("buscarJogadorMaiorSalario")
-	public Long buscarJogadorMaiorSalario(Long idTime) {
+	public Long buscarJogadorMaiorSalario(Long idTime) {	
 		Time time = getTimePorId(idTime);
 		
 		if (time == null) {
 			throw new TimeNaoEncontradoException();
 		}
 		
-		List<Jogador> ordenaSalarioJogadoresLista = time.getJogadorLista()
+		Jogador jogadorComMaiorSalarioDoTime = null;
+		
+		List<Jogador> ordenaSalarioJogadoresDoTimeLista = time.getJogadorLista()
 				.stream()
 				.sorted(Comparator.comparing(Jogador::getSalario).reversed())
 				.collect(Collectors.toList());
 		
-		if (ordenaSalarioJogadoresLista.size() == 0) {
+		if (ordenaSalarioJogadoresDoTimeLista.size() > 0) {
+			jogadorComMaiorSalarioDoTime = ordenaSalarioJogadoresDoTimeLista
+					.stream()
+					.findFirst()
+					.orElse(null);
+		}
+		
+		if (jogadorComMaiorSalarioDoTime == null) {
 			throw new JogadorNaoEncontradoException();
 		}
 		
-		Jogador jogador = ordenaSalarioJogadoresLista
-				.stream()
-				.findFirst()
-				.orElse(null);
-
-		return jogador.getId();
+		return jogadorComMaiorSalarioDoTime.getId();
 	}
 	
-
 	@Desafio("buscarSalarioDoJogador")
 	public BigDecimal buscarSalarioDoJogador(Long idJogador) {
 		List<Jogador> todosJogadoresLista = getJogadorLista();
+		
 		Jogador jogador = null;
 		
 		if (todosJogadoresLista.size() > 0) {
@@ -248,7 +255,6 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		return jogador.getSalario();
 	}
 	
-
 	@Desafio("buscarTopJogadores")
 	public List<Long> buscarTopJogadores(Integer top) {
 		List<Jogador> todosJogadoresLista = getJogadorLista();
@@ -271,7 +277,6 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		return topJogadoresLista;
 	}
 	
-
 	@Desafio("buscarCorCamisaTimeDeFora")
 	public String buscarCorCamisaTimeDeFora(Long timeDaCasa, Long timeDeFora) {
 		Time timeCasa = getTimePorId(timeDaCasa);
@@ -291,7 +296,6 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		}
 	}
 	
-
 	private List<Time> getTimeLista() {
 		return timeLista;
 	}
@@ -308,8 +312,7 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		
 		return jogadorLista;
 	}
-	
-	
+		
 	private Time getTimePorId(Long idTime) {
 		List<Time> timeLista = getTimeLista();
 		Time time = null;
@@ -325,38 +328,6 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 		return time;
 	}
 
-	private String dadosValidosParaIncluirTime(Time time) {
-		String mensagemDeErro = "";
-		
-		if (time == null) {
-			return "Nenhum dado foi informado";
-		}
-		
-		if (time.getId() == null) {
-			mensagemDeErro += "Id; ";
-		}
-		
-		if (time.getNome().isEmpty() || time.getNome() == null) {
-			mensagemDeErro += "Nome; ";
-		}
-		
-		if (time.getDataCriacao() == null) {
-			mensagemDeErro += "Data de Criação; ";
-		}
-		
-		if (time.getCorUniformePrincipal().isEmpty() || time.getCorUniformePrincipal() == null) {
-			mensagemDeErro += "Cor do uniforme principal não foi informado; ";
-		}
-		
-		if (time.getCorUniformeSecundario().isEmpty() || time.getCorUniformeSecundario() == null) {
-			mensagemDeErro += "Cor do uniforme secundário não foi informado; ";
-		}
-			
-		return mensagemDeErro;
-	}
-	
-
-	
 	private Jogador getJogadorPorId(Long idJogador) {
 		List<Jogador> jogadorLista = getJogadorLista();
 		Jogador jogador = null;
@@ -372,7 +343,4 @@ public class DesafioMeuTimeApplication implements MeuTimeInterface {
 
 		return jogador;
 	}
-
-	
-	
 }
