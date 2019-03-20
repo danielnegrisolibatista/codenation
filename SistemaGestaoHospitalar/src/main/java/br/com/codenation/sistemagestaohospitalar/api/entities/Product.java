@@ -1,7 +1,6 @@
 package br.com.codenation.sistemagestaohospitalar.api.entities;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,10 +8,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import br.com.codenation.sistemagestaohospitalar.api.enums.ProductType;
+
+
 @Entity
-@Table(name = "hospital")
-public class Hospital implements Serializable {
-	private static final long serialVersionUID = 1L;
+@Table(name = "product")
+public class Product implements Serializable {
+	private static final long serialVersionUID = 3L;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -21,13 +23,13 @@ public class Hospital implements Serializable {
 	@Column(name="name", nullable=true)
 	private String name;
 	
-	@Column(name="address", nullable=true)
-	private String address;
+	@Column(name="description", nullable=true)
+	private String description;
 	
-	@Column(name="beds", nullable=true)
-	private Integer beds;
-	
-	public Hospital() {
+	@Column(name="type", nullable=true)
+	private ProductType productType;
+
+	public Product() {
 	}
 		
 	public Long getId() {
@@ -46,19 +48,22 @@ public class Hospital implements Serializable {
 		this.name = name;
 	}
 	
-	public String getAddress() {
-		return address;
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public ProductType getProductType() {
+		return productType;
+	}
+
+	public void setProductType(ProductType productType) {
+		this.productType = productType;
 	}
 	
-	public void setAddress(String address) {
-		this.address = address;
-	}
+
 	
-	public Integer getBeds() {
-		return beds;
-	}
-	
-	public void setBeds(Integer beds) {
-		this.beds = beds;
-	}
 }

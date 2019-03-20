@@ -11,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,15 +27,14 @@ import br.com.codenation.sistemagestaohospitalar.api.service.HospitalService;
 
 
 @RestController
-@RequestMapping("/api/v1/hospital")
+@RequestMapping("/v1/hospitais")
 public class HospitalController {
 
+	private ModelMapper modelMapper = new ModelMapper();
+	
 	@Autowired
 	private HospitalService hospitalService;
 	
-	@Autowired
-	private ModelMapper modelMapper;
-
 	@RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public List<HospitalDTO> getHospitalsAll() {
@@ -49,19 +46,24 @@ public class HospitalController {
         		.collect(Collectors.toList());
     }
 	
-	@RequestMapping(value = "/page", method = RequestMethod.GET)
+	/*
+	@RequestMapping(params = { "page", "size" }, method = RequestMethod.GET)
     @ResponseBody
-    public List<HospitalDTO> getHospitalsPage(int page, int size, String sortDir, String sort) {
+    public List<HospitalDTO> getHospitalsPaginated(
+    			@RequestParam("page") int page, 
+    			@RequestParam("size") int size, 
+    			String sortDir, 
+    			String sort) {
+		
         List<Hospital> hospitals = hospitalService.getHospitalPageList(page, size, sortDir, sort);
         
         return hospitals
         		.stream()
         		.map(post -> convertToDto(post))
         		.collect(Collectors.toList());
-    }
+    }*/
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
+	@GetMapping(path = "/{id}")
     public HospitalDTO getHospital(@PathVariable("id") Long id) {
         return convertToDto(hospitalService.getHospitalById(id));
     }

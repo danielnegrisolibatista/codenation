@@ -10,15 +10,15 @@ public interface HospitalService {
 
 	List<Hospital> getHospitalAllList();
 	
-	List<Hospital> getHospitalPageList(int page, int size, String sortDir, String sort);
+	//List<Hospital> getHospitalPageList(int page, int size, String sortDir, String sort);
 	
-	List<Hospital> getHospitalByAddressList(String address);
+	//List<Hospital> getHospitalByAddressList(String address);
 	
 	Hospital getHospitalById(Long id);
 	
-	Hospital getHospitalByName(String name);
+	//Hospital getHospitalByName(String name);
 	
-	Hospital getHospitalByAddress(String address);
+	//Hospital getHospitalByAddress(String address);
 	
 	Hospital createHospital(Hospital hospital);
 	
